@@ -1,0 +1,8 @@
+>>> Bootstrap
+npm install bootstrap react-bootstrap
+
+>>> Node Sass
+npm i node-sass
+
+>>> React Router
+npm install react-router-dom
