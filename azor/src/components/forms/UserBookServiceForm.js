@@ -6,8 +6,8 @@ import Col from "react-bootstrap/esm/Col";
 import Alert from "react-bootstrap/esm/Alert";
 import { useBookingsContext } from "../hooks/useBookingsContext";
 
-const BookServiceForm = () => {
-  const { dispatch } = useBookingsContext();
+const UserBookServiceForm = () => {
+  //   const { dispatch } = useBookingsContext();
   const [first_name, setFname] = useState("");
   const [date, setDate] = useState("");
   const [time_slot, setTimeSlot] = useState("");
@@ -40,7 +40,7 @@ const BookServiceForm = () => {
       setError(null);
       steEmptyFields([]);
       console.log("New booking added", json);
-      dispatch({ type: "CREATE_BOOKING", payload: json });
+      //   dispatch({ type: "CREATE_BOOKING", payload: json });
     }
   };
 
@@ -72,13 +72,13 @@ const BookServiceForm = () => {
             />
           </Form.Group>
 
-          {/* <Form.Group as={Col} controlId="lastName" className="mb-3">
+          <Form.Group as={Col} controlId="lastName" className="mb-3">
             <Form.Label className="fs-5">Last Name*</Form.Label>
             <Form.Control type="text" placeholder="Last name" />
-          </Form.Group> */}
+          </Form.Group>
         </Row>
 
-        {/* <Row className="mb-3">
+        <Row className="mb-3">
           <Form.Group
             as={Col}
             md={6}
@@ -95,7 +95,7 @@ const BookServiceForm = () => {
             <Form.Label className="fs-5">Email*</Form.Label>
             <Form.Control type="email" placeholder="Email" />
           </Form.Group>
-        </Row> */}
+        </Row>
 
         <Row className="mb-3">
           <Form.Group
@@ -143,7 +143,7 @@ const BookServiceForm = () => {
           </Form.Group>
         </Row>
 
-        {/* <Row>
+        <Row>
           <Form.Group
             as={Col}
             md={4}
@@ -153,11 +153,11 @@ const BookServiceForm = () => {
             className="mb-3"
           >
             <Form.Label className="fs-5">Brand*</Form.Label>
-            <Form.Select id="brand" name="brand"> */}
-        {/* <option selected disabled value="">
+            <Form.Select id="brand" name="brand">
+              <option selected disabled value="">
                 Select Brand
-              </option> */}
-        {/* <option value="Honda">Honda</option>
+              </option>
+              <option value="Honda">Honda</option>
               <option value="Kawasaki">Kawasaki</option>
               <option value="Suzuki">Suzuki</option>
               <option value="Yamaha">Yamaha</option>
@@ -188,9 +188,9 @@ const BookServiceForm = () => {
             <Form.Label className="fs-5">Reg Number*</Form.Label>
             <Form.Control type="text" placeholder="Registration Number" />
           </Form.Group>
-        </Row> */}
+        </Row>
 
-        {/* <Form.Group className="mb-5 mt-5" id="formGridCheckbox">
+        <Form.Group className="mb-5 mt-5" id="formGridCheckbox">
           <Form.Label className="fs-3">
             Which type of service would you like to book?*
           </Form.Label>
@@ -213,7 +213,7 @@ const BookServiceForm = () => {
             name="maintenance"
             label="Maintenance"
           />
-        </Form.Group> */}
+        </Form.Group>
 
         <Button variant="primary" type="submit" size="lg">
           Submit
@@ -223,4 +223,4 @@ const BookServiceForm = () => {
   );
 };
 
-export default BookServiceForm;
+export default UserBookServiceForm;

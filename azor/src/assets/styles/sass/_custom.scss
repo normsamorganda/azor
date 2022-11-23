@@ -28,6 +28,14 @@ $primary: $alt-red;
 $secondary: $alt-black;
 $light: $alt-light;
 
+// INPUT
+$input-focus-border-color: tint-color(rgb(10, 10, 10), 50%);
+$input-focus-box-shadow: 0 0 5px rgb(0, 0, 0);
+
+//SELECT
+$form-select-focus-border-color: tint-color(rgb(10, 10, 10), 50%);
+$form-select-focus-box-shadow: 0 0 5px rgb(0, 0, 0);
+
 //NAVBAR
 $navbar-dark-hover-color: $secondary;
 $navbar-dark-active-color: $secondary;
