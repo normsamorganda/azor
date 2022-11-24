@@ -11075,11 +11075,12 @@ div.error {
 }
 
 input.error,
-select.error {
+select.error,
+.formGridCheckbox.error {
   border: 1px solid rgb(253, 37, 55);
 }
 
-input.success,
-select.success {
+input,
+select {
   border: 1px solid rgb(22, 221, 112);
 }/*# sourceMappingURL=main.css.map */

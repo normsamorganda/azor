@@ -17,28 +17,44 @@ const BookingCard = ({ booking, viewBooking, editBooking }) => {
         style={{ borderRadius: 0 }}
       >
         <Row>
-          <Col sm={12} md={8}>
+          <Col sm={12} md={10}>
             <Card.Title className="px-3 mb-0">
-              <h5 className="fw-semibold text-primary mb-0">
-                {booking.service}Oil Change
+              <h5
+                className="fw-semibold text-primary mb-0"
+                style={{
+                  display: "-webkit-box",
+                  WebkitBoxOrient: "vertical",
+                  WebkitLineClamp: "1",
+                  overflow: "hidden",
+                }}
+              >
+                {`${booking.services}`}
+                asdasdasdsadasdasdasdasdasdasdasdasdasdasdasd
               </h5>
+              <small>{booking._id}</small>
             </Card.Title>
           </Col>
-          <Col sm={12} md={4}>
+          <Col xs={{ order: 1 }} sm={12} md={2}>
             <div className="d-flex px-3 ">
-              <Badge pill bg="success" className="ms-auto">
-                Completed
+              <Badge
+                pill
+                bg={
+                  booking.stats === "Completed"
+                    ? "success"
+                    : booking.stats === "Pending"
+                    ? "warning"
+                    : "danger"
+                }
+                className="ms-auto"
+              >
+                {booking.stats}
               </Badge>
             </div>
           </Col>
         </Row>
-        {/* <div className="d-flex " fluid>
-         
-         
-        </div> */}
+
         <Card.Body className="py-0">
           <div className="border-bottom border-danger">
-            {booking.first_name}
             <Row>
               <Col sm={12} md={5}>
                 <span>Appointment Date:</span>
@@ -56,6 +72,8 @@ const BookingCard = ({ booking, viewBooking, editBooking }) => {
               </Col>
             </Row>
           </div>
+          <h6 className="mt-3">My Notes:</h6>
+          {booking.remarks}
           <div>
             <Row className="mt-2">
               <h6 className="mt-2">Motorcycle details</h6>
@@ -71,7 +89,7 @@ const BookingCard = ({ booking, viewBooking, editBooking }) => {
                       overflow: "hidden",
                     }}
                   >
-                    Honda - The All-New CB150X
+                    {booking.brand} - {booking.model}
                   </span>
                   {/* </Badge> */}
                 </h5>
@@ -106,7 +124,6 @@ const BookingCard = ({ booking, viewBooking, editBooking }) => {
             size="sm"
             onClick={() => {
               setShowModal(true);
-              console.log(booking.first_name);
             }}
           >
             More details
@@ -138,15 +155,25 @@ const BookingCard = ({ booking, viewBooking, editBooking }) => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="bookingDetails" className="text-primary">
-            Oil Change
+            {`${booking.services}`}
           </Modal.Title>
-          <Badge pill bg="success" className="ms-3">
-            Completed
+          <Badge
+            pill
+            bg={
+              booking.stats === "Completed"
+                ? "success"
+                : booking.stats === "Pending"
+                ? "warning"
+                : "danger"
+            }
+            className="ms-3"
+          >
+            {booking.stats}
           </Badge>
         </Modal.Header>
         <Modal.Body>
           <div className="border-bottom border-danger">
-            {booking.first_name}
+            {booking._id}
             <Row>
               <Col sm={12} md={5}>
                 <span>Appointment Date:</span>
@@ -174,11 +201,7 @@ const BookingCard = ({ booking, viewBooking, editBooking }) => {
                       fontSize: ".85rem",
                     }}
                   >
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ab
-                    ex exercitationem molestiae maiores laboriosam, at nemo,
-                    neque numquam dolor voluptatibus earum vel nobis cumque
-                    dolore perferendis voluptatum! Architecto, molestiae
-                    repellat?
+                    {booking.remarks}
                   </span>
                 </div>
               </Col>
@@ -199,7 +222,7 @@ const BookingCard = ({ booking, viewBooking, editBooking }) => {
                       overflow: "hidden",
                     }}
                   >
-                    Honda - The All-New CB150X
+                    {booking.brand} - {booking.model}
                   </span>
                   {/* </Badge> */}
                 </h5>

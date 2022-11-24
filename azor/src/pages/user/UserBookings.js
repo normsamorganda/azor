@@ -19,8 +19,8 @@ const UserBookings = () => {
 
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
-  const currentPosts = bookings.slice(firstPostIndex, lastPostIndex);
-  console.log(currentPosts);
+  // const currentPosts = bookings.slice(firstPostIndex, lastPostIndex);
+  // console.log(currentPosts);
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -74,8 +74,8 @@ const UserBookings = () => {
         <Row>
           <Col md={12}>
             <div className="flex-column">
-              {currentPosts &&
-                currentPosts.map((booking) => (
+              {bookings &&
+                bookings.map((booking) => (
                   <BookingCard
                     key={booking._id}
                     booking={booking}

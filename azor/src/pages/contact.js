@@ -1,12 +1,7 @@
-import React, { useEffect, useState } from "react";
-
 import Container from "react-bootstrap/esm/Container";
 import ContactForm from "../components/forms/ContactForm";
-import { useBookingsContext } from "../components/hooks/useBookingsContext";
-import BookingsTable from "../components/tables/BookingsTable";
 
 const Contact = () => {
-  const { bookings, dispatch } = useBookingsContext();
   return (
     <>
       <Container className="my-5">
@@ -32,7 +27,6 @@ const Contact = () => {
         <Container>
           <ContactForm />
         </Container>
-        <BookingsTable bookings={bookings} dispatch={dispatch} />
       </div>
     </>
   );

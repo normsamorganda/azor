@@ -4,22 +4,49 @@ import Button from "react-bootstrap/esm/Button";
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
 import Alert from "react-bootstrap/esm/Alert";
-import { useBookingsContext } from "../hooks/useBookingsContext";
+// import { useBookingsContext } from "../hooks/useBookingsContext";
 
 const UserBookServiceForm = () => {
   //   const { dispatch } = useBookingsContext();
-  const [first_name, setFname] = useState("");
   const [date, setDate] = useState("");
   const [time_slot, setTimeSlot] = useState("");
+  const [brand, setBrand] = useState("");
+  const [model, setModel] = useState("");
+  const [reg_num, setRegNum] = useState("");
+  const [services, setServices] = useState([]);
+  const [remarks, setRemarks] = useState("");
   const [error, setError] = useState(null);
-  const [emptyFields, steEmptyFields] = useState([]);
+  const [emptyFields, setEmptyFields] = useState([]);
+  const stats = "Pending";
+  const costs = 10000;
 
-  console.log(first_name, date, time_slot);
+  // const [selectedServices, setSelectedServices] = useState([]);
+
+  // SELECTED SERVICES
+  const handleSelect = (e) => {
+    const checked = e.target.checked;
+    const value = e.target.value;
+    setServices(
+      checked ? [...services, value] : services.filter((item) => item !== value)
+    );
+  };
+  // console.log(services);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const booking = { first_name, date, time_slot };
-
+    const booking = {
+      date,
+      time_slot,
+      brand,
+      model,
+      reg_num,
+      services,
+      remarks,
+      stats,
+      costs,
+    };
+    console.log(booking);
     const response = await fetch("/api/bookings", {
       method: "POST",
       body: JSON.stringify(booking),
@@ -30,74 +57,42 @@ const UserBookServiceForm = () => {
     if (!response.ok) {
       console.log(json.error);
       setError(json.error);
-      steEmptyFields(json.emptyFields);
+      setEmptyFields(json.emptyFields);
     }
 
     if (response.ok) {
-      setFname("");
       setDate("");
       setTimeSlot("");
+      setBrand("");
+      setModel("");
+      setRegNum("");
+      setServices([]);
+      setRemarks("");
       setError(null);
-      steEmptyFields([]);
+      setEmptyFields([]);
       console.log("New booking added", json);
       //   dispatch({ type: "CREATE_BOOKING", payload: json });
     }
   };
 
+  const serviceList = [
+    { id: 1, service_name: "Brakes" },
+    { id: 2, service_name: "Change Oil" },
+    { id: 3, service_name: "Tires & Batteries" },
+    { id: 4, service_name: "Maintenance" },
+    { id: 5, service_name: "MOT" },
+  ];
+
   return (
     <>
       <Form onSubmit={handleSubmit}>
-        <Form.Label className="fs-3">
+        <Form.Label className="fs-3 mb-5">
           To start your <span className="text-primary">booking</span>, please
           provide all the required information.
         </Form.Label>
         {error && <Alert variant="danger">{error}</Alert>}
+
         <Row className="mb-3 mt-5">
-          <Form.Group
-            as={Col}
-            md={6}
-            lg={6}
-            xl={6}
-            controlId="firstName"
-            className="mb-3"
-          >
-            <Form.Label className="fs-5">First Name*</Form.Label>
-            <Form.Control
-              type="text"
-              // name="first_name"
-              placeholder="First name"
-              onChange={(e) => setFname(e.target.value)}
-              value={first_name}
-              className={emptyFields.includes("fname") ? "error" : ""}
-            />
-          </Form.Group>
-
-          <Form.Group as={Col} controlId="lastName" className="mb-3">
-            <Form.Label className="fs-5">Last Name*</Form.Label>
-            <Form.Control type="text" placeholder="Last name" />
-          </Form.Group>
-        </Row>
-
-        <Row className="mb-3">
-          <Form.Group
-            as={Col}
-            md={6}
-            lg={6}
-            xl={6}
-            controlId="phone"
-            className="mb-3"
-          >
-            <Form.Label className="fs-5">Phone*</Form.Label>
-            <Form.Control type="text" placeholder="Phone" />
-          </Form.Group>
-
-          <Form.Group as={Col} controlId="email" className="mb-3">
-            <Form.Label className="fs-5">Email*</Form.Label>
-            <Form.Control type="email" placeholder="Email" />
-          </Form.Group>
-        </Row>
-
-        <Row className="mb-3">
           <Form.Group
             as={Col}
             md={6}
@@ -109,7 +104,7 @@ const UserBookServiceForm = () => {
             <Form.Label className="fs-5">Date*</Form.Label>
             <Form.Control
               type="date"
-              // name="date"
+              name="date"
               placeholder="Date"
               min={new Date().toISOString().split("T")[0]}
               onChange={(e) => setDate(e.target.value)}
@@ -153,8 +148,14 @@ const UserBookServiceForm = () => {
             className="mb-3"
           >
             <Form.Label className="fs-5">Brand*</Form.Label>
-            <Form.Select id="brand" name="brand">
-              <option selected disabled value="">
+            <Form.Select
+              id="brand"
+              name="brand"
+              onChange={(e) => setBrand(e.target.value)}
+              value={brand}
+              className={emptyFields.includes("brand") ? "error" : ""}
+            >
+              <option disabled value="">
                 Select Brand
               </option>
               <option value="Honda">Honda</option>
@@ -175,6 +176,9 @@ const UserBookServiceForm = () => {
             <Form.Control
               type="text"
               placeholder="E.g. Beat, TMX125 Alpha, XRM125 DS"
+              onChange={(e) => setModel(e.target.value)}
+              value={model}
+              className={emptyFields.includes("model") ? "error" : ""}
             />
           </Form.Group>
           <Form.Group
@@ -186,35 +190,74 @@ const UserBookServiceForm = () => {
             className="mb-3"
           >
             <Form.Label className="fs-5">Reg Number*</Form.Label>
-            <Form.Control type="text" placeholder="Registration Number" />
+            <Form.Control
+              type="text"
+              placeholder="Registration Number"
+              onChange={(e) => setRegNum(e.target.value)}
+              value={reg_num}
+              className={emptyFields.includes("regNum") ? "error" : ""}
+            />
           </Form.Group>
         </Row>
 
-        <Form.Group className="mb-5 mt-5" id="formGridCheckbox">
-          <Form.Label className="fs-3">
-            Which type of service would you like to book?*
-          </Form.Label>
-          <Form.Check type="checkbox" id="brake" name="brake" label="Brakes" />
-          <Form.Check
-            type="checkbox"
-            id="oil_change"
-            name="oil_change"
-            label="Oil Change"
-          />
-          <Form.Check
-            type="checkbox"
-            id="tires_battery"
-            name="tires_battery"
-            label="Tires & Batteries"
-          />
-          <Form.Check
-            type="checkbox"
-            id="maintenance"
-            name="maintenance"
-            label="Maintenance"
+        <Form.Group
+          className="mb-5 mt-3 formGridCheckbox"
+          id="formGridCheckbox"
+        >
+          <Row className={emptyFields.includes("services") ? "error " : ""}>
+            <Col sm={12}>
+              <Form.Label className="fs-3">
+                Which type of service would you like to book?*
+              </Form.Label>
+            </Col>
+            <Col sm={12} md={8}>
+              {serviceList.map((service) => (
+                <Form.Check
+                  key={service.id}
+                  type="checkbox"
+                  value={service.service_name}
+                  onChange={handleSelect}
+                  label={service.service_name}
+                />
+              ))}
+
+              {/* <Form.Check
+                type="checkbox"
+                id="oil_change"
+                name="oil_change"
+                label="Oil Change"
+              />
+              <Form.Check
+                type="checkbox"
+                id="tires_battery"
+                name="tires_battery"
+                label="Tires & Batteries"
+              />
+              <Form.Check
+                type="checkbox"
+                id="maintenance"
+                name="maintenance"
+                label="Maintenance"
+              /> */}
+            </Col>
+            <Col sm={12} md={4}>
+              Total Cost:{" "}
+              <h4>
+                Php <span>{costs}</span>
+              </h4>
+            </Col>
+          </Row>
+        </Form.Group>
+        <Form.Group className="mb-5">
+          <Form.Label className="fs-5">Notes</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows={5}
+            onChange={(e) => setRemarks(e.target.value)}
+            value={remarks}
+            placeholder="Message (Optional)"
           />
         </Form.Group>
-
         <Button variant="primary" type="submit" size="lg">
           Submit
         </Button>
