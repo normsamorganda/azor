@@ -23,11 +23,10 @@ const EditBookingForm = () => {
   const [reg_num, setRegNum] = useState("");
   const [services, setServices] = useState([]);
   const [remarks, setRemarks] = useState("");
-
+  const [costs, setCosts] = useState("");
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
-  const stats = "Pending";
-  const costs = 10000;
+  // const stats = "Pending";
 
   console.log([date, time_slot, brand, model, services]);
 
@@ -46,6 +45,7 @@ const EditBookingForm = () => {
         setModel(json.model);
         setRegNum(json.reg_num);
         setServices(json.services);
+        setCosts(json.costs);
         setRemarks(json.remarks);
         setLoading(false);
       }
@@ -59,7 +59,6 @@ const EditBookingForm = () => {
   // };
 
   // SELECTED SERVICES
-
   const handleSelect = (e) => {
     const checked = e.target.checked;
     const value = e.target.value;
@@ -114,8 +113,8 @@ const EditBookingForm = () => {
       reg_num,
       services,
       remarks,
-      stats,
-      costs,
+      // stats,
+      // costs,
     };
     console.log(booking);
     const response = await fetch(`/api/bookings/${bookingId}`, {

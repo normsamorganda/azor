@@ -48,7 +48,7 @@ const UserLayout = () => {
     },
     {
       text: "Settings",
-      path: "/settings",
+      path: "/account-settings",
       icon: "fa-solid fa-gear",
     },
   ];
@@ -154,7 +154,7 @@ const UserLayout = () => {
             <Route index element={<UserHome />} />
             <Route path="bookings" element={<UserBookings />} />
             <Route path="history" element={<UserHistory />} />
-            <Route path="settings" element={<UserSettings />} />
+            <Route path="account-settings" element={<UserSettings />} />
             <Route path="create-appointment" element={<CreateAppointment />} />
             <Route
               path="bookings/update/:bookingId"

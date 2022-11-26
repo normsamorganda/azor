@@ -1,3 +1,5 @@
+>>>>>>>> REACT PROJECT  <<<<<<<<<<<<<
+
 >>> Bootstrap
 npm install bootstrap react-bootstrap
 
@@ -12,3 +14,15 @@ npm install react-router-dom
 
  >>> SweetAlert
  npm install sweetalert2
+
+
+>>>>>>>>> EXPRESS <<<<<<<<<<<
+
+>>> Express JS
+npm install Express
+
+>>> Dotenv
+npm install Dotenv
+
+>>> Mongoose
+npm install mongoose

@@ -8,10 +8,10 @@ export const bookingReducer = (state, action) => {
       return {
         bookings: action.payload,
       };
-    case "GET_BOOKING":
-      return {
-        bookings: action.payload,
-      };
+    // case "GET_BOOKING":
+    //   return {
+    //     bookings: action.payload,
+    //   };
     case "CREATE_BOOKING":
       return {
         bookings: [action.payload, ...state.bookings],
@@ -34,7 +34,7 @@ export const bookingReducer = (state, action) => {
 };
 
 const BookingContextProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(bookingReducer, { bookings: [] });
+  const [state, dispatch] = useReducer(bookingReducer, { bookings: null });
 
   return (
     <BookingContext.Provider value={{ ...state, dispatch }}>

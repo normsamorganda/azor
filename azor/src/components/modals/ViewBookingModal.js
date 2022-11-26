@@ -1,10 +1,71 @@
-import React from "react";
+import React, { useState } from "react";
 import Badge from "react-bootstrap/esm/Badge";
+import Button from "react-bootstrap/esm/Button";
 import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
 import Modal from "react-bootstrap/Modal";
+import Alert from "react-bootstrap/Alert";
+import { useBookingsContext } from "../hooks/useBookingsContext";
+import Swal from "sweetalert2";
 
 const ViewBookingModal = ({ showModal, setShowModal, booking, bookdate }) => {
+  const { dispatch } = useBookingsContext();
+  const [error, setError] = useState(null);
+  const stats = "Pending";
+
+  const cancelBooking = async (e) => {
+    const status = {
+      stats: stats,
+    };
+    console.log(status);
+    const response = await fetch(`/api/bookings/${booking._id}`, {
+      method: "PATCH",
+      body: JSON.stringify(status),
+      headers: { "Content-Type": "application/json" },
+    });
+    const json = await response.json();
+
+    if (!response.ok) {
+      console.log(json.error);
+      setError(json.error);
+    }
+
+    if (response.ok) {
+      console.log("Booking cancelled!", json);
+      dispatch({ type: "UPDATE_BOOKING", payload: json });
+    }
+  };
+
+  const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: "btn btn-success me-3",
+      cancelButton: "btn btn-danger",
+    },
+    buttonsStyling: false,
+  });
+
+  const handleCancel = () => {
+    swalWithBootstrapButtons
+      .fire({
+        title: "Are you sure?",
+        text: "Please note that you will never revert it back when you cancel an appointment!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, cancel this appointment!",
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          swalWithBootstrapButtons.fire(
+            "Cancelled!",
+            `Your appointment with Ref. Num. <strong>${booking._id}</strong> has been <span className="text-primary">Cancelled</span>!`,
+            "success"
+          );
+          cancelBooking();
+        }
+      });
+  };
   return (
     <>
       <Modal
@@ -41,6 +102,7 @@ const ViewBookingModal = ({ showModal, setShowModal, booking, bookdate }) => {
           </Badge>
         </Modal.Header>
         <Modal.Body>
+          {error && <Alert variant="danger">{error}</Alert>}
           <div className="border-bottom border-danger">
             <span className="text-muted">Reference Number:</span>
             <br></br>
@@ -123,6 +185,13 @@ const ViewBookingModal = ({ showModal, setShowModal, booking, bookdate }) => {
             </Row>
           </div>
         </Modal.Body>
+        <Modal.Footer>
+          <form onSubmit={cancelBooking}>
+            <Button variant="outline-dark" onClick={handleCancel}>
+              Cancel Booking
+            </Button>
+          </form>
+        </Modal.Footer>
       </Modal>
     </>
   );
