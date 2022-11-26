@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const Services = (props) => {
   return (
     <Link to="#" className="services-card-link">
-      <div className="card pb-5">
+      <div className="card-service pb-5">
         <h3 className="card__title">{props.title}</h3>
         <div className="text-center">
           <Image src={props.img} className="icon" />

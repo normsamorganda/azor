@@ -4,13 +4,13 @@ import Badge from "react-bootstrap/Badge";
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
 import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
 import { NavLink, useParams } from "react-router-dom";
 import { formatDistance, subDays } from "date-fns";
 import { useBookingsContext } from "../../hooks/useBookingsContext";
 import Swal from "sweetalert2";
+import ViewBookingModal from "../../modals/ViewBookingModal";
 
-const BookingCard = ({ booking, viewBooking, editBooking }) => {
+const BookingCard = ({ booking, editBooking }) => {
   //View Booking Modal
   const [showModal, setShowModal] = useState(false);
   const { id } = useParams();
@@ -72,7 +72,7 @@ const BookingCard = ({ booking, viewBooking, editBooking }) => {
     <>
       <Card
         className="border border-dark bg-white my-4"
-        style={{ borderRadius: "5px" }}
+        style={{ borderRadius: "5px", padding: "1.5rem" }}
       >
         <Row>
           <Col sm={12} md={10}>
@@ -86,7 +86,7 @@ const BookingCard = ({ booking, viewBooking, editBooking }) => {
                   overflow: "hidden",
                 }}
               >
-                {`${booking.services}`}
+                {booking.brand} - {booking.model}
               </h5>
               <small className="text-muted">Reference Number:</small>
               <br></br>
@@ -97,24 +97,26 @@ const BookingCard = ({ booking, viewBooking, editBooking }) => {
           </Col>
           <Col xs={{ order: 1 }} sm={12} md={2}>
             <div className="d-flex px-3 ">
-              <Badge
-                pill
-                bg={
-                  booking.stats === "Completed"
-                    ? "success"
-                    : booking.stats === "Pending"
-                    ? "warning"
-                    : "danger"
-                }
-                className="ms-auto"
-              >
-                {booking.stats}
-              </Badge>
+              <h5>
+                <Badge
+                  pill
+                  bg={
+                    booking.stats === "Completed"
+                      ? "success"
+                      : booking.stats === "Pending"
+                      ? "warning"
+                      : "danger"
+                  }
+                  className="ms-auto"
+                >
+                  {booking.stats}
+                </Badge>
+              </h5>
             </div>
           </Col>
         </Row>
 
-        <Card.Body className="py-0">
+        <Card.Body className="py-0 mt-4">
           <div className="border-bottom border-danger">
             <Row>
               <Col sm={12} md={3}>
@@ -136,9 +138,12 @@ const BookingCard = ({ booking, viewBooking, editBooking }) => {
           </div>
           <h6 className="mt-3">My Notes:</h6>
           {booking.remarks}
-          <div>
+          <div
+            className="p-2 mt-4"
+            style={{ borderStyle: "dashed", borderWidth: "1px" }}
+          >
+            <h6 className="mt-2">Service details</h6>
             <Row className="mt-2">
-              <h6 className="mt-2">Motorcycle details</h6>
               <Col sm={12} md={12}>
                 <h5>
                   {/* <Badge bg="info" text="dark"> */}
@@ -151,7 +156,7 @@ const BookingCard = ({ booking, viewBooking, editBooking }) => {
                       overflow: "hidden",
                     }}
                   >
-                    {booking.brand} - {booking.model}
+                    {`${booking.services}`}
                   </span>
                   {/* </Badge> */}
                 </h5>
@@ -219,124 +224,12 @@ const BookingCard = ({ booking, viewBooking, editBooking }) => {
         </span>
       </Card>
 
-      {/* >>>>>>>>>>>>>>>>>>>> MODAL <<<<<<<<<<<<<<<<<<<<<<<<<<*/}
-      <Modal
-        size="lg"
-        show={showModal}
-        onHide={() => setShowModal(false)}
-        aria-labelledby="booking details"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title
-            id="bookingDetails"
-            className="text-primary"
-            style={{
-              display: "-webkit-box",
-              WebkitBoxOrient: "vertical",
-              WebkitLineClamp: "1",
-              overflow: "hidden",
-            }}
-          >
-            {`${booking.services}`}
-          </Modal.Title>
-          <Badge
-            pill
-            bg={
-              booking.stats === "Completed"
-                ? "success"
-                : booking.stats === "Pending"
-                ? "warning"
-                : "danger"
-            }
-            className="mx-3"
-          >
-            {booking.stats}
-          </Badge>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="border-bottom border-danger">
-            <span className="text-muted">Reference Number:</span>
-            <br></br>
-            <b>{booking._id}</b>
-
-            <Row className="mt-3">
-              <Col sm={12} md={3}>
-                <span>Appointment Date:</span>
-              </Col>
-              <Col sm={12} md={6}>
-                <span className="fw-semibold">{bookdate}</span>
-              </Col>
-            </Row>
-            <Row className="mb-2">
-              <Col sm={12} md={3}>
-                <span>Time Slot:</span>
-              </Col>
-              <Col sm={12} md={6}>
-                <span className="fw-semibold">{booking.time_slot}</span>
-              </Col>
-            </Row>
-            <Row className="mb-2">
-              <Col sm={12}>
-                <span>
-                  <b>My Notes:</b>
-                </span>
-              </Col>
-              <Col sm={12}>
-                {/* <div className="border border-dark p-2"> */}
-                <div className="p-2">
-                  <span
-                    style={{
-                      fontSize: ".85rem",
-                    }}
-                  >
-                    {booking.remarks}
-                  </span>
-                </div>
-              </Col>
-            </Row>
-          </div>
-          <div>
-            <Row className="mt-2">
-              <h6 className="mt-2">Motorcycle details</h6>
-              <Col sm={12} md={12}>
-                <h5>
-                  {/* <Badge bg="info" text="dark"> */}
-                  <span
-                    className="fw-bold"
-                    style={{
-                      display: "-webkit-box",
-                      WebkitBoxOrient: "vertical",
-                      WebkitLineClamp: "1",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {booking.brand} - {booking.model}
-                  </span>
-                  {/* </Badge> */}
-                </h5>
-              </Col>
-            </Row>
-            <Row className="mb-2">
-              <Col sm={12}>
-                <span>Mechanic Notes:</span>
-              </Col>
-              <Col sm={12}>
-                <span
-                  className="text-muted"
-                  style={{
-                    fontSize: ".85rem",
-                  }}
-                >
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ab
-                  ex exercitationem molestiae maiores laboriosam, at nemo, neque
-                  numquam dolor voluptatibus earum vel nobis cumque dolore
-                  perferendis voluptatum! Architecto, molestiae repellat?
-                </span>
-              </Col>
-            </Row>
-          </div>
-        </Modal.Body>
-      </Modal>
+      <ViewBookingModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        booking={booking}
+        bookdate={bookdate}
+      />
     </>
   );
 };
