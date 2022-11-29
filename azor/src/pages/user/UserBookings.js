@@ -12,8 +12,10 @@ import { useBookingsContext } from "../../components/hooks/useBookingsContext";
 import UserBookingPagination from "../../components/paginations/UserBookingPagination";
 import Spinner from "react-bootstrap/Spinner";
 import AddBookingBtn from "../../components/buttons/AddBookingBtn";
+import { useAuthContext } from "../../components/hooks/useAuthContext";
 
 const UserBookings = () => {
+  const { user } = useAuthContext();
   const { bookings, dispatch } = useBookingsContext();
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,7 +29,9 @@ const UserBookings = () => {
 
   useEffect(() => {
     const fetchBookings = async () => {
-      const response = await fetch("/api/bookings"); // fetch data from the server
+      const response = await fetch("/api/bookings", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      }); // fetch data from the server
       const json = await response.json(); // pass to a variable to use the data
 
       // check if response is ok
@@ -36,8 +40,10 @@ const UserBookings = () => {
         setLoading(false);
       }
     };
-    fetchBookings();
-  }, [dispatch]);
+    if (user) {
+      fetchBookings();
+    }
+  }, [dispatch, user]);
 
   const viewBooking = () => {};
   const editBooking = () => {};
@@ -91,7 +97,14 @@ const UserBookings = () => {
           </DropdownButton>
         </InputGroup>
         {loading ? (
-          <Spinner animation="border" variant="primary" size="lg" />
+          <div className="d-flex justify-content-center">
+            <Spinner
+              animation="border"
+              variant="primary"
+              size="lg"
+              className="mt-5"
+            />
+          </div>
         ) : (
           <>
             <Row>

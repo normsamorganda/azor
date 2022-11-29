@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/esm/Button";
 import Row from "react-bootstrap/esm/Row";
@@ -7,8 +7,9 @@ import Alert from "react-bootstrap/esm/Alert";
 import { useBookingsContext } from "../hooks/useBookingsContext";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-
+import { useAuthContext } from "../hooks/useAuthContext";
 const UserBookServiceForm = () => {
+  const { user } = useAuthContext();
   const { dispatch } = useBookingsContext();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -19,13 +20,10 @@ const UserBookServiceForm = () => {
   const [reg_num, setRegNum] = useState("");
   const [services, setServices] = useState([]);
   const [remarks, setRemarks] = useState("");
+  const [user_phone, setUser_phone] = useState("");
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
-
-  const stats = "Pending";
   const costs = 10000;
-  const createdAt = new Date().toISOString();
-  console.log(createdAt);
 
   // SELECTED SERVICES
   const handleSelect = (e) => {
@@ -35,6 +33,8 @@ const UserBookServiceForm = () => {
       checked ? [...services, value] : services.filter((item) => item !== value)
     );
   };
+
+  console.log(services);
   // console.log(services);
   const swalWithBootstrapButtons = Swal.mixin({
     customClass: {
@@ -47,22 +47,34 @@ const UserBookServiceForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!user) {
+      setError("You must be logged in!");
+      return;
+    }
+
+    if (services === []) {
+      setError("Please choose a service");
+      return;
+    }
     const booking = {
       date,
       time_slot,
+      user_phone,
       brand,
       model,
       reg_num,
       services,
       remarks,
-      stats,
       costs,
     };
     console.log(booking);
     const response = await fetch("/api/bookings", {
       method: "POST",
       body: JSON.stringify(booking),
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
     });
     const json = await response.json();
 
@@ -92,6 +104,7 @@ const UserBookServiceForm = () => {
             );
             setDate("");
             setTimeSlot("");
+            setUser_phone("");
             setBrand("");
             setModel("");
             setRegNum("");
@@ -100,20 +113,13 @@ const UserBookServiceForm = () => {
             setError(null);
             setEmptyFields([]);
             dispatch({ type: "CREATE_BOOKING", payload: json });
-            navigate(`/account/user/${id}/bookings`);
-            // redirect_Page();
+            navigate(`/account/user/bookings`);
             console.log("New booking added", json);
+            console.log(json);
           }
         });
     }
   };
-
-  // let redirect_Page = () => {
-  //   let tID = setTimeout(function () {
-  //     window.location.href = `/account/user/${id}/bookings`;
-  //     window.clearTimeout(tID); // clear time out.
-  //   }, 1800);
-  // };
 
   const serviceList = [
     { id: 1, service_name: "Brakes" },
@@ -174,7 +180,26 @@ const UserBookServiceForm = () => {
             </Form.Select>
           </Form.Group>
         </Row>
-
+        <Row className="mb-3 ">
+          <Form.Group
+            as={Col}
+            md={6}
+            lg={6}
+            xl={6}
+            controlId="date"
+            className="mb-3 "
+          >
+            <Form.Label className="fs-5">Phone*</Form.Label>
+            <Form.Control
+              type="text"
+              name="user_phone"
+              placeholder="Phone"
+              onChange={(e) => setUser_phone(e.target.value)}
+              value={user_phone}
+              className={emptyFields.includes("user_phone") ? "error" : ""}
+            />
+          </Form.Group>
+        </Row>
         <Row>
           <Form.Group
             as={Col}
@@ -252,30 +277,12 @@ const UserBookServiceForm = () => {
                 <Form.Check
                   key={service.id}
                   type="checkbox"
+                  name="services"
                   value={service.service_name}
                   onChange={handleSelect}
                   label={service.service_name}
                 />
               ))}
-
-              {/* <Form.Check
-                type="checkbox"
-                id="oil_change"
-                name="oil_change"
-                label="Oil Change"
-              />
-              <Form.Check
-                type="checkbox"
-                id="tires_battery"
-                name="tires_battery"
-                label="Tires & Batteries"
-              />
-              <Form.Check
-                type="checkbox"
-                id="maintenance"
-                name="maintenance"
-                label="Maintenance"
-              /> */}
             </Col>
             <Col sm={12} md={4}>
               Total Cost:{" "}
@@ -302,7 +309,7 @@ const UserBookServiceForm = () => {
           variant="outline-secondary"
           size="md"
           onClick={() => {
-            navigate(`/account/user/${id}/bookings`);
+            navigate(`/account/user/bookings`);
           }}
         >
           Cancel

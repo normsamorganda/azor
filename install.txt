@@ -26,3 +26,13 @@ npm install Dotenv
 
 >>> Mongoose
 npm install mongoose
+
+>>> Bcrypt
+npm install bcrypt
+
+>>> JSON Web Token
+npm install jsonwebtoken
+
+>>> Validator
+npm install validator
+

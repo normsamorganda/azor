@@ -23,17 +23,19 @@ export const bookingReducer = (state, action) => {
         ),
       };
     case "UPDATE_BOOKING":
+      const newBooking = state.bookings.filter(
+        (booking) => booking._id !== action.payload._id
+      );
+
       return {
-        bookings: state.bookings.filter(
-          (booking) => booking._id !== action.payload._id
-        ),
+        bookings: newBooking,
       };
     default:
       return state;
   }
 };
 
-const BookingContextProvider = ({ children }) => {
+export const BookingContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(bookingReducer, { bookings: null });
 
   return (
@@ -42,5 +44,3 @@ const BookingContextProvider = ({ children }) => {
     </BookingContext.Provider>
   );
 };
-
-export default BookingContextProvider;

@@ -8,8 +8,10 @@ import Spinner from "react-bootstrap/Spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { useBookingsContext } from "../hooks/useBookingsContext";
 import Swal from "sweetalert2";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const EditBookingForm = () => {
+  const { user } = useAuthContext();
   const { dispatch } = useBookingsContext();
   const { id, bookingId } = useParams();
   const navigate = useNavigate();
@@ -33,7 +35,9 @@ const EditBookingForm = () => {
   //GET BOOKING DETAILS
   useEffect(() => {
     const getBooking = async () => {
-      const response = await fetch(`/api/bookings/${bookingId}`); // fetch data from the server
+      const response = await fetch(`/api/bookings/${bookingId}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      }); // fetch data from the server
       const json = await response.json(); // pass to a variable to use the data
 
       // check if response is ok
@@ -50,8 +54,10 @@ const EditBookingForm = () => {
         setLoading(false);
       }
     };
-    getBooking();
-  }, []);
+    if (user) {
+      getBooking();
+    }
+  }, [user]);
 
   // let handleInput = (e) => {
   //   e.persist();
@@ -101,10 +107,13 @@ const EditBookingForm = () => {
 
   const handleCancel = () => {
     swalWithBootstrapButtons.fire({ title: "No Changes were made!" });
-    navigate(`/account/user/${id}/bookings`);
+    navigate(`/account/user/bookings`);
   };
 
   const handleSubmit = async (e) => {
+    if (!user) {
+      return;
+    }
     const booking = {
       date,
       time_slot,
@@ -120,7 +129,10 @@ const EditBookingForm = () => {
     const response = await fetch(`/api/bookings/${bookingId}`, {
       method: "PATCH",
       body: JSON.stringify(booking),
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
     });
     const json = await response.json();
 
@@ -137,7 +149,7 @@ const EditBookingForm = () => {
       setEmptyFields([]);
       console.log("Booking updated successfully", json);
       dispatch({ type: "UPDATE_BOOKING", payload: json });
-      navigate(`/account/user/${id}/bookings`);
+      navigate(`/account/user/bookings`);
     }
   };
 
@@ -155,7 +167,7 @@ const EditBookingForm = () => {
       {loading ? (
         <Spinner animation="border" variant="danger" size="lg" />
       ) : (
-        <Form onSubmit={handleSubmit} action={`/account/user/${id}/bookings`}>
+        <Form onSubmit={handleSubmit} action={`/account/user/bookings`}>
           {error && <Alert variant="danger">{error}</Alert>}
 
           <Row className="mb-3 mt-5">

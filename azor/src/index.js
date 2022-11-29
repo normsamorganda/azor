@@ -2,13 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "../src/assets/styles/css/main.css";
 import App from "./App";
-import BookingContextProvider from "./components/contexts/BookingContext";
+import { AuthContextProvider } from "./contexts/AuthContext";
+import { BookingContextProvider } from "./contexts/BookingContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <BookingContextProvider>
-      <App />
-    </BookingContextProvider>
+    <AuthContextProvider>
+      <BookingContextProvider>
+        <App />
+      </BookingContextProvider>
+    </AuthContextProvider>
   </React.StrictMode>
 );

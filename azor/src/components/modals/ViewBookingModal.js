@@ -7,13 +7,25 @@ import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
 import { useBookingsContext } from "../hooks/useBookingsContext";
 import Swal from "sweetalert2";
+import { useParams } from "react-router-dom";
+// import { useAuthContext } from "../hooks/useAuthContext";
+import { useAuthContext } from "../../components/hooks/useAuthContext";
 
 const ViewBookingModal = ({ showModal, setShowModal, booking, bookdate }) => {
+  const { user } = useAuthContext();
   const { dispatch } = useBookingsContext();
   const [error, setError] = useState(null);
-  const stats = "Pending";
+  const stats = "Cancelled";
+  const { id } = useParams();
+
+  console.log(user);
 
   const cancelBooking = async (e) => {
+    if (!user) {
+      setError("You must be logged in");
+      return;
+    }
+
     const status = {
       stats: stats,
     };
@@ -21,7 +33,10 @@ const ViewBookingModal = ({ showModal, setShowModal, booking, bookdate }) => {
     const response = await fetch(`/api/bookings/${booking._id}`, {
       method: "PATCH",
       body: JSON.stringify(status),
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
     });
     const json = await response.json();
 
@@ -33,6 +48,7 @@ const ViewBookingModal = ({ showModal, setShowModal, booking, bookdate }) => {
     if (response.ok) {
       console.log("Booking cancelled!", json);
       dispatch({ type: "UPDATE_BOOKING", payload: json });
+      // navigate(`/account/user/${id}/bookings`);
     }
   };
 
@@ -63,9 +79,13 @@ const ViewBookingModal = ({ showModal, setShowModal, booking, bookdate }) => {
             "success"
           );
           cancelBooking();
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         }
       });
   };
+
   return (
     <>
       <Modal
@@ -146,10 +166,9 @@ const ViewBookingModal = ({ showModal, setShowModal, booking, bookdate }) => {
           </div>
           <div>
             <Row className="mt-2">
-              <h6 className="mt-2">Motorcycle details</h6>
+              <h6 className="mt-2">Service details</h6>
               <Col sm={12} md={12}>
                 <h5>
-                  {/* <Badge bg="info" text="dark"> */}
                   <span
                     className="fw-bold"
                     style={{
@@ -161,7 +180,6 @@ const ViewBookingModal = ({ showModal, setShowModal, booking, bookdate }) => {
                   >
                     {`${booking.services}`}
                   </span>
-                  {/* </Badge> */}
                 </h5>
               </Col>
             </Row>
@@ -185,13 +203,18 @@ const ViewBookingModal = ({ showModal, setShowModal, booking, bookdate }) => {
             </Row>
           </div>
         </Modal.Body>
-        <Modal.Footer>
-          <form onSubmit={cancelBooking}>
-            <Button variant="outline-dark" onClick={handleCancel}>
-              Cancel Booking
-            </Button>
-          </form>
-        </Modal.Footer>
+        {booking.stats === "Pending" ? (
+          <Modal.Footer>
+            <form onSubmit={cancelBooking}>
+              <Button variant="outline-dark" onClick={handleCancel}>
+                <i className="fa-regular fa-calendar-xmark me-1"></i> Cancel
+                Booking
+              </Button>
+            </form>
+          </Modal.Footer>
+        ) : (
+          ""
+        )}
       </Modal>
     </>
   );

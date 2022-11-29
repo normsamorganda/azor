@@ -6,8 +6,12 @@ const {
   deleteBooking,
   updateBooking,
 } = require("../controllers/bookingController");
+const requireAuth = require("../middleware/requireAuth");
 
 const router = express.Router();
+
+// Require auth for all booking routes
+router.use(requireAuth);
 
 // GET ALL BOOKINGS
 router.get("/", getAllBookings);

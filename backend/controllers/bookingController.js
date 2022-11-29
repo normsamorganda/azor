@@ -3,7 +3,9 @@ const mongoose = require("mongoose");
 
 // GET ALL BOOKINGS
 const getAllBookings = async (req, res) => {
-  const bookings = await Booking.find({}).sort({ createdAt: -1 }); //sort by date created
+  const user_id = req.user._id;
+
+  const bookings = await Booking.find({ user_id }).sort({ createdAt: -1 }); //sort by date created
 
   res.status(200).json(bookings);
 };
@@ -29,13 +31,13 @@ const createBooking = async (req, res) => {
   const {
     date,
     time_slot,
+    user_phone,
     brand,
     model,
     reg_num,
     services,
-    stats,
-    remarks,
     costs,
+    remarks,
   } = req.body;
 
   let emptyFields = [];
@@ -44,6 +46,9 @@ const createBooking = async (req, res) => {
   }
   if (!time_slot) {
     emptyFields.push("timeSlot");
+  }
+  if (!user_phone) {
+    emptyFields.push("user_phone");
   }
   if (!brand) {
     emptyFields.push("brand");
@@ -54,9 +59,10 @@ const createBooking = async (req, res) => {
   if (!reg_num) {
     emptyFields.push("regNum");
   }
-  if (!services) {
+  if (services.length === 0) {
     emptyFields.push("services");
   }
+
   if (emptyFields.length > 0) {
     return res
       .status(400)
@@ -66,16 +72,18 @@ const createBooking = async (req, res) => {
   // Add data to db
 
   try {
+    const user_id = req.user._id;
     const booking = await Booking.create({
       date,
       time_slot,
+      user_phone,
       brand,
       model,
       reg_num,
       services,
-      stats,
       remarks,
       costs,
+      user_id,
     });
     res.status(200).json(booking);
   } catch (error) {

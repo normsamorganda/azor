@@ -8,16 +8,24 @@ import Card from "react-bootstrap/Card";
 import { Link, useParams } from "react-router-dom";
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
+import { useAuthContext } from "../../components/hooks/useAuthContext";
 
 const UserHome = () => {
   const { bookings, dispatch } = useBookingsContext();
+  const { user } = useAuthContext();
 
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
 
   useEffect(() => {
     const fetchBookings = async () => {
-      const response = await fetch("/api/bookings"); // fetch data from the server
+      const response = await fetch("/api/bookings", {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+
+      // fetch data from the server
       const json = await response.json(); // pass to a variable to use the data
 
       // check if response is ok
@@ -26,8 +34,10 @@ const UserHome = () => {
         setLoading(false);
       }
     };
-    fetchBookings();
-  }, [dispatch]);
+    if (user) {
+      fetchBookings();
+    }
+  }, [dispatch, user]);
 
   return (
     <>
@@ -67,7 +77,7 @@ const UserHome = () => {
             <div className="mt-5 mb-3">
               <h2>Recent Appoinments</h2>
               <h5>
-                <Link to={`/account/user/${id}/bookings`}>See All</Link>
+                <Link to={`/account/user/bookings`}>See All</Link>
               </h5>
             </div>
             {loading ? (
@@ -81,7 +91,13 @@ const UserHome = () => {
               </div>
             ) : (
               <Row>
-                {bookings === "" ? (
+                {bookings !== "" ? (
+                  bookings.slice(0, 4).map((booking) => (
+                    <Col sm={12} md={6} key={booking._id}>
+                      <ActivityCard booking={booking} />
+                    </Col>
+                  ))
+                ) : (
                   <>
                     <h1 className="text-center">
                       It seems you don't have any appointment yet.{" "}
@@ -90,12 +106,6 @@ const UserHome = () => {
                       Book an appointment now!
                     </h2>
                   </>
-                ) : (
-                  bookings.slice(0, 4).map((booking) => (
-                    <Col sm={12} md={6} key={booking._id}>
-                      <ActivityCard booking={booking} />
-                    </Col>
-                  ))
                 )}
               </Row>
             )}

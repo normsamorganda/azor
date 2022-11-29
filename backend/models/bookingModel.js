@@ -30,6 +30,7 @@ const bookingSchema = new Schema(
     },
     stats: {
       type: String,
+      default: "Pending",
       required: true,
     },
     remarks: {
@@ -39,6 +40,23 @@ const bookingSchema = new Schema(
     costs: {
       type: String,
       required: true,
+    },
+    user_id: {
+      type: String,
+      required: true,
+    },
+    user_phone: {
+      type: String,
+      required: true,
+    },
+    admin_id: {
+      type: String,
+      default: "none",
+      required: true,
+    },
+    mechanic_notes: {
+      type: String,
+      default: "",
     },
   },
   { timestamps: true }

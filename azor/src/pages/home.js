@@ -7,7 +7,7 @@ import WhyBook from "../components/sections/WhyBookSection";
 const Home = () => {
   return (
     <>
-      <div className="bg-white" style={{ height: "100vh" }}>
+      <div className="bg-white">
         <HeroBanner />
         <Container>
           <ServicesSection />
