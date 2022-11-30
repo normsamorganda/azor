@@ -8,10 +8,7 @@ export const bookingReducer = (state, action) => {
       return {
         bookings: action.payload,
       };
-    // case "GET_BOOKING":
-    //   return {
-    //     bookings: action.payload,
-    //   };
+
     case "CREATE_BOOKING":
       return {
         bookings: [action.payload, ...state.bookings],

@@ -82,7 +82,7 @@ const MainNavbar = () => {
                     id="basic-nav-dropdown"
                   >
                     <NavDropdown.Item
-                      href={`/account/user`}
+                      href={`/account`}
                       className="d-flex align-items-center"
                     >
                       <div className="me-auto">My Account</div>

@@ -1,11 +1,11 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import ActivityCard from "../../components/cards/users/ActivityCard";
 import AddBookingBtn from "../../components/buttons/AddBookingBtn";
 import { useBookingsContext } from "../../components/hooks/useBookingsContext";
 import Spinner from "react-bootstrap/esm/Spinner";
 import Card from "react-bootstrap/Card";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
 import { useAuthContext } from "../../components/hooks/useAuthContext";
@@ -15,7 +15,6 @@ const UserHome = () => {
   const { user } = useAuthContext();
 
   const [loading, setLoading] = useState(true);
-  const { id } = useParams();
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -77,7 +76,7 @@ const UserHome = () => {
             <div className="mt-5 mb-3">
               <h2>Recent Appoinments</h2>
               <h5>
-                <Link to={`/account/user/bookings`}>See All</Link>
+                <Link to={`/account/bookings`}>See All</Link>
               </h5>
             </div>
             {loading ? (

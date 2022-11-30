@@ -22,7 +22,10 @@ import { useAuthContext } from "./components/hooks/useAuthContext";
 function App() {
   const { user } = useAuthContext();
 
-  console.log(user);
+  // console.log(user.isAdmin);
+  // const isAdmin = user.isAdmin;
+  // console.log(isAdmin);
+
   return (
     <>
       <Router>
@@ -35,34 +38,40 @@ function App() {
             <Route path="/contact-us" element={<Contact />} />
             <Route
               path="/login"
-              element={!user ? <LoginPage /> : <Navigate to="/account/user/" />}
+              element={!user ? <LoginPage /> : <Navigate to="/" />}
             />
-
             <Route
               path="/register"
               element={!user ? <RegisterPage /> : <Navigate to="/" />}
             />
+            <Route path="*" element={<NotFoundPage />} />
+            {/* <Route
+              path="/login"
+              element={!user ? <LoginPage /> : <Navigate to="/account/user/" />}
+            /> */}
+
+            {/* <Route
+              path="/register"
+              element={!user ? <RegisterPage /> : <Navigate to="/" />}
+            /> */}
             <Route path="/dummy" element={<DummyPage />} />
           </Route>
-          <Route path="*" element={<NotFoundPage />} />
-          <Route
+
+          {/* <Route
             path="/account/admin/*"
-            element={user ? <AdminLayout /> : <Navigate to="/login" />}
-          />
+            element={
+              user && user.isAdmin === true ? <AdminLayout /> : <AdminLayout />
+            }
+          /> */}
+
           <Route
-            path="/account/user/*"
-            element={user ? <UserLayout /> : <Navigate to="/login" />}
+            path="/account/*"
+            element={
+              user && user.isAdmin === false ? <UserLayout /> : <AdminLayout />
+            }
           />
-          {/* <Route path="/account/admin/*" element={<AdminLayout />} />
-          <Route path="/account/user/*" element={<UserLayout />} /> */}
           <Route path="/account/user/booking" element={<BookingsTable />} />
         </Routes>
-        {/* <Routes>
-          <Route
-            path="/login"
-            element={!user ? <LoginPage /> : <Navigate to="/account/admin/" />}
-          />
-        </Routes> */}
       </Router>
     </>
   );

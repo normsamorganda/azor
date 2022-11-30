@@ -207,7 +207,7 @@ const BookingCard = ({ booking, editBooking }) => {
           {booking.stats === "Pending" ? (
             <Button
               as={NavLink}
-              to={`/account/user/bookings/update/${booking._id}`}
+              to={`/account/bookings/update/${booking._id}`}
               variant="outline-info"
               size="sm"
               onClick={editBooking}

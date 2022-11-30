@@ -19,6 +19,8 @@ const AdminCompleteForm = () => {
   // const [inputField, setInputField] = useState([]);
 
   const [date, setDate] = useState("");
+  const [first_name, setFirst_name] = useState("");
+  const [last_name, setLast_name] = useState("");
   const [time_slot, setTimeSlot] = useState("");
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
@@ -26,17 +28,15 @@ const AdminCompleteForm = () => {
   const [services, setServices] = useState([]);
   const [remarks, setRemarks] = useState("");
   const [costs, setCosts] = useState("");
-  const [mechanicNotes, setMechanicNotes] = useState(
-    "No other recommendations"
-  );
+  const [mechanic_notes, setMechanic_notes] = useState("");
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
-  // const stats = "Pending";
+  const stats = "Completed";
 
   //GET BOOKING DETAILS
   useEffect(() => {
     const getBooking = async () => {
-      const response = await fetch(`/api/bookings/${bookingId}`, {
+      const response = await fetch(`/api/bookings/admin/${bookingId}`, {
         headers: { Authorization: `Bearer ${user.token}` },
       }); // fetch data from the server
       const json = await response.json(); // pass to a variable to use the data
@@ -45,6 +45,8 @@ const AdminCompleteForm = () => {
       if (response.ok) {
         let date = new Date(json.date).toISOString().slice(0, 10);
         setDate(date);
+        setFirst_name(json.first_name);
+        setLast_name(json.last_name);
         setTimeSlot(json.time_slot);
         setBrand(json.brand);
         setModel(json.model);
@@ -78,48 +80,53 @@ const AdminCompleteForm = () => {
     buttonsStyling: false,
   });
 
-  const handleEdit = () => {
-    swalWithBootstrapButtons
-      .fire({
-        title: "Are you sure?",
-        text: "Please take note of the changes you are about to make!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, update it!",
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          swalWithBootstrapButtons.fire(
-            "Updated!",
-            `Your appointment with Ref. Num. <strong>${bookingId}</strong> has been updated.`,
-            "success"
-          );
-          handleSubmit();
-        }
-      });
-  };
-
   const handleCancel = () => {
     swalWithBootstrapButtons.fire({ title: "No Changes were made!" });
-    navigate(`/account/admin/bookings`);
+    navigate(`/account/bookings`);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!user) {
+      setError("You must be logged in!");
+      return;
+    }
+
+    if (!mechanic_notes) {
+      setError("Mechanic Notes is required.");
+    } else {
+      swalWithBootstrapButtons
+        .fire({
+          title: "Are you sure?",
+          text: "Please take note of the changes you are about to make!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, update it!",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            swalWithBootstrapButtons.fire(
+              "Updated!",
+              `Your appointment with Ref. Num. <strong>${bookingId}</strong> has been updated.`,
+              "success"
+            );
+            completeBooking();
+          }
+        });
+    }
+  };
+
+  const completeBooking = async () => {
     const booking = {
-      date,
-      time_slot,
-      brand,
-      model,
-      reg_num,
-      services,
-      remarks,
-      // stats,
-      // costs,
+      stats,
+      mechanic_notes,
     };
     console.log(booking);
-    const response = await fetch(`/api/bookings/${bookingId}`, {
+
+    const response = await fetch(`/api/bookings/admin/${bookingId}`, {
       method: "PATCH",
       body: JSON.stringify(booking),
       headers: {
@@ -136,17 +143,15 @@ const AdminCompleteForm = () => {
     }
 
     if (response.ok) {
-      // setInputField([]);
       setServices([]);
-      setMechanicNotes("");
+      setMechanic_notes("");
       setError(null);
       setEmptyFields([]);
       console.log("Booking updated successfully", json);
-      dispatch({ type: "UPDATE_BOOKING", payload: json });
-      navigate(`/account/admin/${id}/bookings`);
+      // dispatch({ type: "UPDATE_BOOKING", payload: json });
+      navigate(`/account/bookings`);
     }
   };
-
   const serviceList = [
     { id: 1, service_name: "Brakes" },
     { id: 2, service_name: "Change Oil" },
@@ -161,13 +166,13 @@ const AdminCompleteForm = () => {
       {loading ? (
         <Spinner animation="border" variant="danger" size="lg" />
       ) : (
-        <Form onSubmit={handleSubmit} action={`/account/admin/${id}/bookings`}>
-          {error && <Alert variant="danger">{error}</Alert>}
-
+        <Form onSubmit={handleSubmit}>
           <Row className="mb-2 mt-4">
             <Col sm={12}>Name:</Col>
             <Col>
-              <h4 className="text-primary">Jhon Doe</h4>
+              <h4 className="text-primary">
+                {first_name} {last_name}
+              </h4>
             </Col>
           </Row>
           <Row className="mb-3 ">
@@ -336,6 +341,7 @@ const AdminCompleteForm = () => {
             </Form.Group>
           )}
           <Row className="mt-5 border-top border-primary pt-5">
+            {error && <Alert variant="danger">{error}</Alert>}
             <Col>
               <Form.Group className="mb-5">
                 <Form.Label className="fs-5">
@@ -343,20 +349,18 @@ const AdminCompleteForm = () => {
                 </Form.Label>
                 <Form.Control
                   as="textarea"
+                  placeholder='e.g. "No other recommendations"'
                   rows={5}
-                  onChange={(e) => setMechanicNotes(e.target.value)}
-                  value={mechanicNotes}
-                  placeholder=""
+                  onChange={(e) => setMechanic_notes(e.target.value)}
+                  value={mechanic_notes}
+                  className={
+                    emptyFields.includes("mechanic_notes") ? "error" : ""
+                  }
                 />
               </Form.Group>
             </Col>
           </Row>
-          <Button
-            className="me-4"
-            variant="primary"
-            size="md"
-            onClick={handleEdit}
-          >
+          <Button className="me-4" variant="primary" size="md" type="submit">
             Complete
           </Button>
           <Button variant="outline-secondary" size="md" onClick={handleCancel}>

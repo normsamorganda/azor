@@ -5,13 +5,13 @@ import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
 import Alert from "react-bootstrap/esm/Alert";
 import { useBookingsContext } from "../hooks/useBookingsContext";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAuthContext } from "../hooks/useAuthContext";
+
 const UserBookServiceForm = () => {
   const { user } = useAuthContext();
   const { dispatch } = useBookingsContext();
-  const { id } = useParams();
   const navigate = useNavigate();
   const [date, setDate] = useState("");
   const [time_slot, setTimeSlot] = useState("");
@@ -20,10 +20,13 @@ const UserBookServiceForm = () => {
   const [reg_num, setRegNum] = useState("");
   const [services, setServices] = useState([]);
   const [remarks, setRemarks] = useState("");
-  const [user_phone, setUser_phone] = useState("");
+  const [user_phone, setUser_phone] = useState(user.phone);
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
   const costs = 10000;
+  const first_name = user.fname;
+  const last_name = user.lname;
+  const mechanic_notes = "";
 
   // SELECTED SERVICES
   const handleSelect = (e) => {
@@ -51,40 +54,23 @@ const UserBookServiceForm = () => {
       setError("You must be logged in!");
       return;
     }
-
-    if (services === []) {
+    console.log(emptyFields);
+    if (!date) {
+      setError("Date is required");
+    } else if (!time_slot) {
+      setError("Time Slot is required");
+    } else if (!user_phone) {
+      setError("Phone is required");
+    } else if (!brand) {
+      setError("Brand is required");
+    } else if (!model) {
+      setError("Model is required");
+    } else if (!reg_num) {
+      setError("Registration Number is required");
+    } else if (services.length === 0) {
+      emptyFields.push("services");
       setError("Please choose a service");
-      return;
-    }
-    const booking = {
-      date,
-      time_slot,
-      user_phone,
-      brand,
-      model,
-      reg_num,
-      services,
-      remarks,
-      costs,
-    };
-    console.log(booking);
-    const response = await fetch("/api/bookings", {
-      method: "POST",
-      body: JSON.stringify(booking),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.token}`,
-      },
-    });
-    const json = await response.json();
-
-    if (!response.ok) {
-      console.log(json.error);
-      setError(json.error);
-      setEmptyFields(json.emptyFields);
-    }
-
-    if (response.ok) {
+    } else {
       swalWithBootstrapButtons
         .fire({
           title: "Are you sure?",
@@ -102,22 +88,61 @@ const UserBookServiceForm = () => {
               `You're now booked.`,
               "success"
             );
-            setDate("");
-            setTimeSlot("");
-            setUser_phone("");
-            setBrand("");
-            setModel("");
-            setRegNum("");
-            setServices([]);
-            setRemarks("");
-            setError(null);
-            setEmptyFields([]);
-            dispatch({ type: "CREATE_BOOKING", payload: json });
-            navigate(`/account/user/bookings`);
-            console.log("New booking added", json);
-            console.log(json);
+            CreateBooking();
           }
         });
+    }
+    // }
+  };
+
+  const CreateBooking = async () => {
+    const booking = {
+      date,
+      time_slot,
+      brand,
+      model,
+      reg_num,
+      services,
+      remarks,
+      costs,
+      user_phone,
+      mechanic_notes,
+      first_name,
+      last_name,
+    };
+    console.log(booking);
+
+    const response = await fetch("/api/bookings", {
+      method: "POST",
+      body: JSON.stringify(booking),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
+    const json = await response.json();
+
+    if (!response.ok) {
+      console.log(json.error);
+      setError(json.error);
+      setEmptyFields(json.emptyFields);
+    }
+
+    if (response.ok) {
+      setDate("");
+      setTimeSlot("");
+      setUser_phone("");
+      setBrand("");
+      setModel("");
+      setRegNum("");
+      setServices([]);
+      setRemarks("");
+      setError(null);
+      setEmptyFields([]);
+      dispatch({ type: "CREATE_BOOKING", payload: json });
+      navigate(`/account/bookings`);
+      console.log("New booking added", json);
+      // console.log(json);
     }
   };
 
@@ -133,9 +158,13 @@ const UserBookServiceForm = () => {
     <>
       {/* BOOKING FORM */}
       <Form onSubmit={handleSubmit}>
+        <small>Name: </small>
+        <h4 className="text-primary">
+          {user.fname} {user.lname}
+        </h4>
         {error && <Alert variant="danger">{error}</Alert>}
 
-        <Row className="mb-3 mt-5">
+        <Row className="mb-3 mt-3">
           <Form.Group
             as={Col}
             md={6}
@@ -302,14 +331,20 @@ const UserBookServiceForm = () => {
             placeholder="Message (Optional)"
           />
         </Form.Group>
-        <Button variant="primary" type="submit" size="md" className="me-4">
+        <Button
+          variant="primary"
+          size="md"
+          className="me-4"
+          type="submit"
+          // onClick={handleSubmit}
+        >
           Submit
         </Button>
         <Button
           variant="outline-secondary"
           size="md"
           onClick={() => {
-            navigate(`/account/user/bookings`);
+            navigate(`/account/bookings`);
           }}
         >
           Cancel

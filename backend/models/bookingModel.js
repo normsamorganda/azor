@@ -56,7 +56,15 @@ const bookingSchema = new Schema(
     },
     mechanic_notes: {
       type: String,
-      default: "",
+      required: false,
+    },
+    first_name: {
+      type: String,
+      required: true,
+    },
+    last_name: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }

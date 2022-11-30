@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import Badge from "react-bootstrap/esm/Badge";
 import Button from "react-bootstrap/esm/Button";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ViewBookingModal from "../modals/ViewBookingModal";
 
 const BookingsRows = ({ booking }) => {
-  const { id } = useParams();
   let bookdate = new Date(`${booking.date}`).toLocaleDateString();
 
   const [showModal, setShowModal] = useState(false);
@@ -43,7 +42,7 @@ const BookingsRows = ({ booking }) => {
           ) : (
             <Button
               as={Link}
-              to={`/account/admin/bookings/${booking._id}/complete-booking`}
+              to={`/account/bookings/${booking._id}/complete-booking`}
               size="sm"
               className="btn-success"
             >

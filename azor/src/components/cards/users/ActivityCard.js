@@ -54,7 +54,7 @@ function ActivityCard({ booking }) {
               size="sm"
               variant="outline-info"
               as={Link}
-              to={`/account/user/bookings/update/${booking._id}`}
+              to={`/account/bookings/update/${booking._id}`}
             >
               Edit
             </Button>

@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "../user/UserSideNavBar1.css";
-import { Navigate, NavLink, Route, Routes } from "react-router-dom";
+import {
+  Navigate,
+  NavLink,
+  Route,
+  Routes,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import Tooltip from "react-bootstrap/Tooltip";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -18,11 +25,21 @@ const UserLayout = () => {
   const { user } = useAuthContext();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isSidebarShow, setIsSidebarShow] = useState(false);
-
+  const { logout } = useLogout();
+  const navigate = useNavigate();
   const windowSize = window.innerWidth;
 
   useEffect(() => {
     windowSize > 300 ? setIsSidebarShow(true) : setIsSidebarShow(false);
+  }, []);
+
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    const items = JSON.parse(localStorage.getItem("user"));
+    if (items) {
+      setItems(items);
+    }
   }, []);
 
   const handleClick = () => {
@@ -33,10 +50,9 @@ const UserLayout = () => {
       : setIsExpanded(true);
   };
 
-  const { logout } = useLogout();
-
   const handleLogout = () => {
     logout();
+    navigate("/");
   };
   const menuItems = [
     {
@@ -107,7 +123,7 @@ const UserLayout = () => {
             >
               <NavLink
                 key={index}
-                to={`/account/user${item.path}`}
+                to={`/account${item.path}`}
                 className={
                   isExpanded ? "menus-item" : "menus-item menus-item-NX"
                 }
@@ -137,11 +153,12 @@ const UserLayout = () => {
         >
           <NavDropdown
             className="text-dark ms-auto dropdown"
-            title={user.email}
+            title={items.email}
             id="basic-nav-dropdown"
           >
             <NavDropdown.Item
-              href={`/account/user/account-settings`}
+              as={Link}
+              to={`/account/account-settings`}
               className="d-flex align-items-center"
             >
               <div className="me-auto">My Account</div>

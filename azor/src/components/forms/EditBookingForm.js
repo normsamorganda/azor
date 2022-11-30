@@ -26,9 +26,11 @@ const EditBookingForm = () => {
   const [services, setServices] = useState([]);
   const [remarks, setRemarks] = useState("");
   const [costs, setCosts] = useState("");
+  const [user_phone, setUser_phone] = useState("");
+  const [first_name, setFirst_name] = useState("");
+  const [last_name, setLast_name] = useState("");
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
-  // const stats = "Pending";
 
   console.log([date, time_slot, brand, model, services]);
 
@@ -51,6 +53,9 @@ const EditBookingForm = () => {
         setServices(json.services);
         setCosts(json.costs);
         setRemarks(json.remarks);
+        setFirst_name(json.first_name);
+        setLast_name(json.last_name);
+        setUser_phone(json.user_phone);
         setLoading(false);
       }
     };
@@ -72,6 +77,7 @@ const EditBookingForm = () => {
       checked ? [...services, value] : services.filter((item) => item !== value)
     );
   };
+
   console.log(services);
 
   const swalWithBootstrapButtons = Swal.mixin({
@@ -82,38 +88,64 @@ const EditBookingForm = () => {
     buttonsStyling: false,
   });
 
-  const handleEdit = () => {
-    swalWithBootstrapButtons
-      .fire({
-        title: "Are you sure?",
-        text: "Please take note of the changes you are about to make!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, update it!",
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          swalWithBootstrapButtons.fire(
-            "Updated!",
-            `Your appointment with Ref. Num. <strong>${bookingId}</strong> has been updated.`,
-            "success"
-          );
-          handleSubmit();
-        }
-      });
-  };
-
   const handleCancel = () => {
     swalWithBootstrapButtons.fire({ title: "No Changes were made!" });
-    navigate(`/account/user/bookings`);
+    navigate(`/account/bookings`);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
     if (!user) {
+      setError("You must be logged in!");
       return;
     }
+    console.log(emptyFields);
+    if (!date) {
+      setError("Date is required");
+    } else if (!time_slot) {
+      setError("Time Slot is required");
+    } else if (!user_phone) {
+      setError("Phone is required");
+    } else if (!brand) {
+      setError("Brand is required");
+    } else if (!model) {
+      setError("Model is required");
+    } else if (!reg_num) {
+      setError("Registration Number is required");
+    } else if (services.length === 0) {
+      emptyFields.push("services");
+      setError("Please choose a service");
+    } else {
+      swalWithBootstrapButtons
+        .fire({
+          title: "Are you sure?",
+          text: "Please take note of the changes you are about to make!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, update it!",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            swalWithBootstrapButtons.fire(
+              "Updated!",
+              `Your appointment with Ref. Num. <strong>${bookingId}</strong> has been updated.`,
+              "success"
+            );
+            updateMyBooking();
+          }
+        });
+    }
+  };
+
+  const updateMyBooking = async () => {
+    if (!user) {
+      setError("You must be logged in!");
+      return;
+    }
+
     const booking = {
       date,
       time_slot,
@@ -122,10 +154,11 @@ const EditBookingForm = () => {
       reg_num,
       services,
       remarks,
-      // stats,
-      // costs,
+      user_phone,
+      costs,
     };
     console.log(booking);
+
     const response = await fetch(`/api/bookings/${bookingId}`, {
       method: "PATCH",
       body: JSON.stringify(booking),
@@ -143,13 +176,11 @@ const EditBookingForm = () => {
     }
 
     if (response.ok) {
-      // setInputField([]);
       setServices([]);
       setError(null);
       setEmptyFields([]);
       console.log("Booking updated successfully", json);
-      dispatch({ type: "UPDATE_BOOKING", payload: json });
-      navigate(`/account/user/bookings`);
+      navigate(`/account/bookings`);
     }
   };
 
@@ -167,10 +198,14 @@ const EditBookingForm = () => {
       {loading ? (
         <Spinner animation="border" variant="danger" size="lg" />
       ) : (
-        <Form onSubmit={handleSubmit} action={`/account/user/bookings`}>
+        <Form onSubmit={handleSubmit}>
+          <small>Name: </small>
+          <h4 className="text-primary">
+            {first_name} {last_name}
+          </h4>
           {error && <Alert variant="danger">{error}</Alert>}
 
-          <Row className="mb-3 mt-5">
+          <Row className="mb-3 mt-3">
             <Col sm={12}>Reference Number:</Col>
             <Col>
               <b>{bookingId}</b>
@@ -221,7 +256,26 @@ const EditBookingForm = () => {
               </Form.Select>
             </Form.Group>
           </Row>
-
+          <Row className="mb-3 ">
+            <Form.Group
+              as={Col}
+              md={6}
+              lg={6}
+              xl={6}
+              controlId="date"
+              className="mb-3 "
+            >
+              <Form.Label className="fs-5">Phone*</Form.Label>
+              <Form.Control
+                type="text"
+                name="user_phone"
+                placeholder="Phone"
+                onChange={(e) => setUser_phone(e.target.value)}
+                value={user_phone}
+                className={emptyFields.includes("user_phone") ? "error" : ""}
+              />
+            </Form.Group>
+          </Row>
           <Row>
             <Form.Group
               as={Col}
@@ -299,6 +353,7 @@ const EditBookingForm = () => {
                   <Form.Check
                     key={service.id}
                     type="checkbox"
+                    name="services"
                     value={service.service_name}
                     onChange={handleSelect}
                     label={service.service_name}
@@ -326,13 +381,7 @@ const EditBookingForm = () => {
               placeholder="Message (Optional)"
             />
           </Form.Group>
-          <Button
-            className="me-4"
-            variant="primary"
-            // type="submit"
-            size="md"
-            onClick={handleEdit}
-          >
+          <Button className="me-4" variant="primary" size="md" type="submit">
             Update
           </Button>
           <Button variant="outline-secondary" size="md" onClick={handleCancel}>

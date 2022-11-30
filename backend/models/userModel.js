@@ -65,20 +65,6 @@ userSchema.statics.signup = async function (
     throw Error("Password is required!");
   }
 
-  // Virtual
-  // userSchema
-  //   .virtual("confirm_password")
-  //   .get(function () {
-  //     return this._confirm_password;
-  //   })
-  //   .set(function (value) {
-  //     this._confirm_password = value;
-  //   });
-
-  // if (this.password !== this._confirm_password) {
-  //   this.invalidate("passwordConfirmation", "must match confirmation.");
-  // }
-
   if (exists) {
     throw Error("Email already in use!");
   }
