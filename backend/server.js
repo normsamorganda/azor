@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 
 const bookingRoutes = require("./routes/bookingsRoutes");
 const userRoutes = require("./routes/userRoutes");
+const customerInquiryRoutes = require("./routes/customerInquiryRoutes");
 
 // EXPRESS APP
 const app = express();
@@ -19,6 +20,7 @@ app.use((req, res, next) => {
 // ROUTES
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/inquiries", customerInquiryRoutes);
 
 // CONNECT TO MONGO DB
 mongoose

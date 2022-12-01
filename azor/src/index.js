@@ -4,6 +4,7 @@ import "../src/assets/styles/css/main.css";
 import App from "./App";
 import { AuthContextProvider } from "./contexts/AuthContext";
 import { BookingContextProvider } from "./contexts/BookingContext";
+import { CustomerInquiryContextProvider } from "./contexts/InquiryContext";
 import { UserContextProvider } from "./contexts/UserContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -12,7 +13,9 @@ root.render(
     <AuthContextProvider>
       <UserContextProvider>
         <BookingContextProvider>
-          <App />
+          <CustomerInquiryContextProvider>
+            <App />
+          </CustomerInquiryContextProvider>
         </BookingContextProvider>
       </UserContextProvider>
     </AuthContextProvider>

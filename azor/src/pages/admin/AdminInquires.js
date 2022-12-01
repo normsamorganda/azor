@@ -1,20 +1,21 @@
 import React from "react";
 import Container from "react-bootstrap/esm/Container";
-import AddUserAdminForm from "../../components/forms/AddUserAdminForm";
+import AdminUserListTable from "../../components/tables/AdminInquiriesTable";
 
-const AdminAddUser = () => {
+const AdminInquires = () => {
   return (
     <div>
       <Container className="mt-3 border-bottom border-secondary ">
         <h1>
-          <i className="fa-solid fa-user-plus text-primary"></i> Add New Admin
+          <i className="fa-solid fa-square-envelope text-primary"></i> General
+          Inquiries
         </h1>
       </Container>
       <Container className="my-5">
-        <AddUserAdminForm />
+        <AdminUserListTable />
       </Container>
     </div>
   );
 };
 
-export default AdminAddUser;
+export default AdminInquires;

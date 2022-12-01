@@ -11,7 +11,7 @@ export const bookingReducer = (state, action) => {
 
     case "CREATE_BOOKING":
       return {
-        bookings: [action.payload, ...state.bookings],
+        bookings: [action.payload, state.bookings],
       };
     case "DELETE_BOOKING":
       return {

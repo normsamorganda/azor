@@ -49,31 +49,6 @@ const UserBookings = () => {
   const editBooking = () => {};
 
   const countBooking = () => {};
-
-  //
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("user"));
-    if (data) {
-      setData(data);
-    }
-  }, []);
-  const id = data._id;
-
-  const [searchTerm, setsearchTerm] = useState("");
-  const [selectValue, setValue] = useState(""); // selected value in filter
-
-  const handleSelect = (e) => {
-    console.log(e, id);
-    setValue(e);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setsearchTerm("");
-  };
-
-  //
   return (
     <>
       <Container className="mt-3 border-bottom border-secondary">
@@ -95,32 +70,32 @@ const UserBookings = () => {
       </Container>
 
       <Container className="my-3">
-        {/*  */}
-        <form onSubmit={handleSubmit}>
-          <InputGroup className="mb-3">
-            <Form.Control
-              aria-label="Text input with dropdown button"
-              placeholder="Search"
-              onChange={(event) => {
-                setsearchTerm(event.target.value);
-                console.log(searchTerm);
-              }}
-            />
-
-            <DropdownButton
-              variant="secondary"
-              title="Filter by"
-              id="input-group-dropdown-2"
-              align="end"
-              onSelect={handleSelect}
-            >
-              <Dropdown.Item eventKey="brand">Brand</Dropdown.Item>
-              <Dropdown.Divider />
-              <Dropdown.Item eventKey="stats">Status</Dropdown.Item>
-            </DropdownButton>
-          </InputGroup>
-        </form>
-        {/*  */}
+        <InputGroup className="mb-3">
+          <Form.Control
+            aria-label="Text input with dropdown button"
+            placeholder="Search"
+          />
+          <DropdownButton
+            variant="secondary"
+            title="Filter by"
+            id="input-group-dropdown-2"
+            align="end"
+          >
+            <Dropdown.Item as={Link} to="#">
+              Service
+            </Dropdown.Item>
+            <Dropdown.Item as={Link} to="#">
+              Brand/Model
+            </Dropdown.Item>
+            <Dropdown.Item as={Link} to="#">
+              Booking Date
+            </Dropdown.Item>
+            <Dropdown.Divider />
+            <Dropdown.Item as={Link} to="#">
+              Status
+            </Dropdown.Item>
+          </DropdownButton>
+        </InputGroup>
         {loading ? (
           <div className="d-flex justify-content-center">
             <Spinner
@@ -140,19 +115,8 @@ const UserBookings = () => {
             <Row>
               <Col md={12}>
                 <div className="flex-column">
-                  {bookings
-                    .filter((val) => {
-                      if (searchTerm == "") {
-                        return val;
-                      } else if (
-                        val.stats
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase())
-                      ) {
-                        return val;
-                      }
-                    })
-                    .map((booking) => (
+                  {bookings &&
+                    bookings.map((booking) => (
                       <BookingCard
                         key={booking._id}
                         booking={booking}

@@ -184,6 +184,10 @@ const ViewBookingModal = ({ showModal, setShowModal, booking, bookdate }) => {
               </Col>
             </Row>
             <Row className="mb-2">
+              <Col sm={12} className="mb-3">
+                <span>Estimated Cost: </span>
+                <b>{booking.costs}</b>
+              </Col>
               <Col sm={12}>
                 <span>Mechanic Notes:</span>
               </Col>
@@ -194,10 +198,9 @@ const ViewBookingModal = ({ showModal, setShowModal, booking, bookdate }) => {
                     fontSize: ".85rem",
                   }}
                 >
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ab
-                  ex exercitationem molestiae maiores laboriosam, at nemo, neque
-                  numquam dolor voluptatibus earum vel nobis cumque dolore
-                  perferendis voluptatum! Architecto, molestiae repellat?
+                  {booking.mechanic_notes
+                    ? booking.mechanic_notes
+                    : "No other notes or recommendations from the mechanic in-charge."}
                 </span>
               </Col>
             </Row>

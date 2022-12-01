@@ -11,35 +11,11 @@ const AdminBookings = () => {
   return (
     <>
       <Container className="mt-3 border-bottom border-secondary ">
-        <h1>Bookings</h1>
+        <h1>
+          <i className="fa-solid fa-calendar-check text-primary"></i> Bookings
+        </h1>
       </Container>
       <Container className="my-5">
-        <InputGroup className="mb-3">
-          <Form.Control
-            aria-label="Text input with dropdown button"
-            placeholder="Search"
-          />
-          <DropdownButton
-            variant="secondary"
-            title="Filter by"
-            id="input-group-dropdown-2"
-            align="end"
-          >
-            <Dropdown.Item as={Link} to="#">
-              Service
-            </Dropdown.Item>
-            <Dropdown.Item as={Link} to="#">
-              Brand/Model
-            </Dropdown.Item>
-            <Dropdown.Item as={Link} to="#">
-              Booking Date
-            </Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item as={Link} to="#">
-              Status
-            </Dropdown.Item>
-          </DropdownButton>
-        </InputGroup>
         <AdminBookingsTable />
       </Container>
     </>

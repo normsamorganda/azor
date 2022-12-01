@@ -78,7 +78,7 @@ const MainNavbar = () => {
                 {user && (
                   <NavDropdown
                     className="text-dark ms-auto dropdown"
-                    title={user.email}
+                    title={user?.email}
                     id="basic-nav-dropdown"
                   >
                     <NavDropdown.Item

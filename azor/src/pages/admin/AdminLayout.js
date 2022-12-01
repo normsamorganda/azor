@@ -17,6 +17,8 @@ import AdminAddUser from "./AdminAddUser";
 import AdminAccountSettings from "./AdminAccountSettings";
 import { useLogout } from "../../components/hooks/useLogout";
 import { useAuthContext } from "../../components/hooks/useAuthContext";
+import AdminUserList from "./AdminUserList";
+import AdminInquires from "./AdminInquires";
 
 const UserLayout = () => {
   const { id } = useParams();
@@ -67,9 +69,19 @@ const UserLayout = () => {
       icon: "fa-regular fa-calendar-check",
     },
     {
-      text: "Add User",
-      path: "/add-user",
+      text: "Add Admin",
+      path: "/add-admin",
       icon: "fa-solid fa-user-plus",
+    },
+    {
+      text: "Users",
+      path: "/users-list",
+      icon: "fa-solid fa-users",
+    },
+    {
+      text: "Inquiries",
+      path: "/inquiries",
+      icon: "fa-solid fa-square-envelope",
     },
     {
       text: "Settings",
@@ -161,7 +173,7 @@ const UserLayout = () => {
           <h3 style={{ marginLeft: "6rem" }}>Admin</h3>
           <NavDropdown
             className="text-dark ms-auto dropdown"
-            title={items.email}
+            title={items?.email}
             id="basic-nav-dropdown"
           >
             <NavDropdown.Item href={`/account/account-settings`}>
@@ -187,8 +199,10 @@ const UserLayout = () => {
               path="bookings/:bookingId/complete-booking"
               element={<AdminCompleteBooking />}
             />
-            <Route path="add-user" element={<AdminAddUser />} />
+            <Route path="add-admin" element={<AdminAddUser />} />
+            <Route path="users-list" element={<AdminUserList />} />
             <Route path="account-settings" element={<AdminAccountSettings />} />
+            <Route path="inquiries" element={<AdminInquires />} />
           </Routes>
         </div>
       </div>

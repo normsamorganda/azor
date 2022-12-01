@@ -82,8 +82,7 @@ const getUser = async (req, res) => {
 
 // CREATE A NEW USER
 const createUser = async (req, res) => {
-  const { first_name, last_name, isAdmin, email, phone, password, picture } =
-    req.body;
+  const { first_name, last_name, isAdmin, email, password, picture } = req.body;
 
   let emptyFields = [];
   if (!first_name) {
@@ -97,9 +96,6 @@ const createUser = async (req, res) => {
   }
   if (!email) {
     emptyFields.push("email");
-  }
-  if (!phone) {
-    emptyFields.push("phone");
   }
   if (!password) {
     emptyFields.push("password");
@@ -135,13 +131,13 @@ const createUser = async (req, res) => {
       last_name,
       isAdmin,
       email,
-      phone,
       password: hash,
       picture,
     });
     res.status(200).json(user);
+    return { isSuccess };
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    return res.status(400).json({ error: error.message });
   }
 };
 
@@ -166,7 +162,7 @@ const deleteUser = async (req, res) => {
 const updateUser = async (req, res) => {
   const { id } = req.params;
 
-  const { first_name, last_name, isAdmin, phone } = req.body;
+  const { first_name, last_name, isAdmin } = req.body;
 
   let emptyFields = [];
 
@@ -187,9 +183,6 @@ const updateUser = async (req, res) => {
   }
   if (!isAdmin) {
     emptyFields.push("isAdmin");
-  }
-  if (!phone) {
-    emptyFields.push("phone");
   }
 
   if (emptyFields.length > 0) {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/esm/Button";
 import Col from "react-bootstrap/esm/Col";
 import Container from "react-bootstrap/esm/Container";
@@ -7,10 +7,41 @@ import Spinner from "react-bootstrap/esm/Spinner";
 import Form from "react-bootstrap/Form";
 import { Link, useParams } from "react-router-dom";
 import Avatar from "../../assets/media/images/Avatar.png";
+import { useAuthContext } from "../../components/hooks/useAuthContext";
 
 const AdminEditAcoountForm = () => {
   const { id } = useParams();
+  const { user } = useAuthContext();
   const [loading, setLoading] = useState(false);
+  const [first_name, setFirst_name] = useState("");
+  const [last_name, setLast_name] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [picture, setPicture] = useState("");
+  const [phone, setPhone] = useState("");
+  const [error, setError] = useState(null);
+
+  //GET BOOKING DETAILS
+  useEffect(() => {
+    const getUser = async () => {
+      const response = await fetch(`/api/users/${user._id}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      }); // fetch data from the server
+      const json = await response.json(); // pass to a variable to use the data
+
+      // check if response is ok
+      if (response.ok) {
+        setFirst_name(json.first_name);
+        setLast_name(json.last_name);
+        setEmail(json.email);
+        setPicture(json.picture);
+      }
+    };
+    if (user) {
+      getUser();
+    }
+  }, [user]);
+
   return (
     <div>
       {loading ? (
@@ -41,7 +72,7 @@ const AdminEditAcoountForm = () => {
             <div className="py-5">
               <div className="mb-5">
                 <span>User role:</span>
-                <h4>Basic</h4>
+                <h4>ADMIN</h4>
               </div>
               <Row className="mb-4">
                 <Form.Group
@@ -57,6 +88,8 @@ const AdminEditAcoountForm = () => {
                     type="text"
                     placeholder="First Name"
                     name="first_name"
+                    onChange={(e) => setFirst_name(e.target.value)}
+                    value={first_name}
                   />
                 </Form.Group>
                 <Form.Group controlId="last_name" as={Col} md={6} lg={6} xl={6}>
@@ -65,6 +98,8 @@ const AdminEditAcoountForm = () => {
                     type="text"
                     placeholder="Last Name"
                     name="last_name"
+                    onChange={(e) => setLast_name(e.target.value)}
+                    value={last_name}
                   />
                 </Form.Group>
               </Row>
@@ -75,7 +110,8 @@ const AdminEditAcoountForm = () => {
                     type="email"
                     placeholder="Email"
                     name="email"
-                    value="jhondoe@gmail.com"
+                    onChange={(e) => setEmail(e.target.value)}
+                    value={email}
                     disabled
                   />
                 </Form.Group>

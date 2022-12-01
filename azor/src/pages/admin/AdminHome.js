@@ -25,7 +25,9 @@ const AdminHome = () => {
   return (
     <>
       <Container className="mt-3 border-bottom border-secondary ">
-        <h1>Dashboard</h1>
+        <h1>
+          <i className="fa-solid fa-gauge text-primary"></i> Dashboard
+        </h1>
       </Container>
       <Container>
         {loading ? (

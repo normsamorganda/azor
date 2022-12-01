@@ -95,7 +95,7 @@ const BookingCard = ({ booking, editBooking }) => {
               >
                 {booking.brand} - {booking.model}
               </h5>
-              <small>user id: {booking.user_id}</small>
+              {/* <small>user id: {booking.user_id}</small> */}
               <br></br>
               <small className="text-muted">Reference Number:</small>
               <br></br>

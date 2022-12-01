@@ -153,7 +153,7 @@ const UserLayout = () => {
         >
           <NavDropdown
             className="text-dark ms-auto dropdown"
-            title={items.email}
+            title={items?.email}
             id="basic-nav-dropdown"
           >
             <NavDropdown.Item

@@ -9,6 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useBookingsContext } from "../hooks/useBookingsContext";
 import Swal from "sweetalert2";
 import { useAuthContext } from "../hooks/useAuthContext";
+import Services from "./Services";
 
 const EditBookingForm = () => {
   const { user } = useAuthContext();
@@ -25,7 +26,7 @@ const EditBookingForm = () => {
   const [reg_num, setRegNum] = useState("");
   const [services, setServices] = useState([]);
   const [remarks, setRemarks] = useState("");
-  const [costs, setCosts] = useState("");
+  const [costs, setTotalCost] = useState(0);
   const [user_phone, setUser_phone] = useState("");
   const [first_name, setFirst_name] = useState("");
   const [last_name, setLast_name] = useState("");
@@ -51,7 +52,7 @@ const EditBookingForm = () => {
         setModel(json.model);
         setRegNum(json.reg_num);
         setServices(json.services);
-        setCosts(json.costs);
+        setTotalCost(parseInt(json.costs));
         setRemarks(json.remarks);
         setFirst_name(json.first_name);
         setLast_name(json.last_name);
@@ -69,13 +70,30 @@ const EditBookingForm = () => {
   //   setInputField({ ...inputField, [e.target.name]: e.target.value });
   // };
 
+  // // SELECTED SERVICES  -
+  // const handleSelect = (e) => {
+  //   const checked = e.target.checked;
+  //   const value = e.target.value;
+  //   setServices(
+  //     checked ? [...services, value] : services.filter((item) => item !== value)
+  //   );
+  // };
+
   // SELECTED SERVICES
-  const handleSelect = (e) => {
+  const handleChange = (item, e) => {
     const checked = e.target.checked;
     const value = e.target.value;
     setServices(
-      checked ? [...services, value] : services.filter((item) => item !== value)
+      checked
+        ? [...services, value]
+        : services.filter((service) => service !== value)
     );
+    setTotalCost(
+      checked
+        ? (total) => total + parseInt(item.price)
+        : (total) => total - parseInt(item.price)
+    );
+    console.log(setTotalCost);
   };
 
   console.log(services);
@@ -184,12 +202,20 @@ const EditBookingForm = () => {
     }
   };
 
+  // const serviceList = [
+  //   { id: 1, service_name: "Brakes" },
+  //   { id: 2, service_name: "Change Oil" },
+  //   { id: 3, service_name: "Tires & Batteries" },
+  //   { id: 4, service_name: "Maintenance" },
+  //   { id: 5, service_name: "MOT" },
+  // ];
+
   const serviceList = [
-    { id: 1, service_name: "Brakes" },
-    { id: 2, service_name: "Change Oil" },
-    { id: 3, service_name: "Tires & Batteries" },
-    { id: 4, service_name: "Maintenance" },
-    { id: 5, service_name: "MOT" },
+    { id: 1, service_name: "Brakes", price: 500 },
+    { id: 2, service_name: "Change Oil", price: 1500 },
+    { id: 3, service_name: "Tires & Batteries", price: 300 },
+    { id: 4, service_name: "Maintenance", price: 3000 },
+    { id: 5, service_name: "MOT", price: 1500 },
   ];
 
   console.log(...(services === serviceList.service_name ? "checked" : ""));
@@ -349,16 +375,34 @@ const EditBookingForm = () => {
                 </Form.Label>
               </Col>
               <Col sm={12} md={8}>
-                {serviceList.map((service) => (
+                {serviceList.map((item) => (
+                  // <Form.Check
+                  //   key={service.id}
+                  //   type="checkbox"
+                  //   name="services"
+                  //   value={service.service_name}
+                  //   onChange={handleSelect}
+                  //   label={service.service_name}
+                  //   checked={
+                  //     services.includes(service.service_name) ? true : false
+                  //   }
+                  // <Services
+                  //   key={item.id}
+                  //   value={item.service_name}
+                  //   handleChange={handleChange}
+                  //   label={item.service_name}
+                  //   item={item}
+                  // />
+
                   <Form.Check
-                    key={service.id}
+                    key={item.id}
                     type="checkbox"
-                    name="services"
-                    value={service.service_name}
-                    onChange={handleSelect}
-                    label={service.service_name}
+                    name={item.service_name}
+                    value={item.service_name}
+                    onChange={(event) => handleChange(item, event)}
+                    label={`${item.service_name} - ₱${item.price}`}
                     checked={
-                      services.includes(service.service_name) ? true : false
+                      services.includes(item.service_name) ? true : false
                     }
                   />
                 ))}

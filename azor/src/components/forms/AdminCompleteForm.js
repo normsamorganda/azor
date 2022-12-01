@@ -308,12 +308,14 @@ const AdminCompleteForm = () => {
                     key={service.id}
                     type="checkbox"
                     value={service.service_name}
-                    onChange={handleSelect}
+                    // onChange={handleSelect}
                     label={service.service_name}
                     checked={
                       services.includes(service.service_name) ? true : false
                     }
-                    disabled
+                    disabled={
+                      services.includes(service.service_name) ? false : true
+                    }
                   />
                 ))}
               </Col>
@@ -325,8 +327,8 @@ const AdminCompleteForm = () => {
               </Col>
             </Row>
           </Form.Group>
-          {remarks === "" ? (
-            <h4>(No other notes by Jhon)</h4>
+          {!remarks ? (
+            <h4>(No other notes from {first_name})</h4>
           ) : (
             <Form.Group className="mb-5">
               <Form.Label className="fs-5">Notes</Form.Label>
@@ -335,7 +337,6 @@ const AdminCompleteForm = () => {
                 rows={5}
                 onChange={(e) => setRemarks(e.target.value)}
                 value={remarks}
-                placeholder="Message (Optional)"
                 disabled
               />
             </Form.Group>

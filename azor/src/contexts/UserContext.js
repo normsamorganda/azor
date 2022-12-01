@@ -10,7 +10,7 @@ export const userReducer = (state, action) => {
       };
     case "CREATE_USER":
       return {
-        users: [action.payload, ...state.users],
+        users: [action.payload, state.users],
       };
     case "DELETE_USER":
       return {
@@ -20,7 +20,6 @@ export const userReducer = (state, action) => {
       const newUser = state.users.filter(
         (user) => user._id !== action.user._id
       );
-
       return {
         users: newUser,
       };
